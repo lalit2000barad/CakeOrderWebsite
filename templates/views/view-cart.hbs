@@ -1,0 +1,142 @@
+<html>
+    <head>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+     <style>
+      table {
+        width: 100%;
+      }
+      th, td {
+        width: 15%;
+      }
+      td, th {
+        border: 1px solid black; /* Adds a 1px black border to td and th elements */
+      }
+
+      tr {
+        border-bottom: 1px solid black; /* Adds a 1px black border to bottom of each tr element */
+      }
+
+      
+     </style>
+     
+   
+    </head>
+    <body>
+     
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+              <tr>
+                
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Customer Name</th>
+                <th>Customer Phoneno</th>
+                <th>Customer Address</th>
+                <th>Customer message </th>
+                <th>Order Status </th>
+                <th>Actions</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each orders}}
+                <tr data-id="{{this._id}}">
+                  <td><input type="text" id="updatedName_{{this._id}}" value="{{this.CakeName}}" disabled></td>
+                  <td><input type="text" id="updatedPrice_{{this._id}}" value="{{this.CakePrice}}"disabled ></td>
+                  <td><input type="text" id="updatedQuantity_{{this._id}}" value="{{this.CakeQuantity}}"disabled></td>
+                  <td><input type="text" id="updatedCustName_{{this._id}}" value="{{this.Customer_Name}}"disabled></td>
+                  <td><input type="text" id="updatedCustPhoneno_{{this._id}}" value="{{this.Customer_Phoneno}}"disabled></td>
+                  <td><input type="text" id="updatedCustEmail_{{this._id}}" value="{{this.Customer_Email}}"disabled></td>
+                  <td><input type="text" id="updatedCustAddr_{{this._id}}" value="{{this.Customer_Address}}"></td>
+                  <td><input type="text" id="updatedCustMessage_{{this._id}}" value="{{this.Customer_custommsg}}"disabled></td>
+                  <td><input type="text" id="updatedCustumerorderstatus_{{this._id}}" value="{{this.Customer_order_status}}"disabled></td>
+
+                  <td>
+                    <button class="update-btn" onclick="updateData('{{this._id}}')">Update Address</button>
+                  
+           
+                  </td>
+                  <td>
+                    <button class="delete-btn" deleteData('{{this._id}}')">review</button>
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          
+</table>
+    </body>
+    <script>
+        function updateData(id) {
+          // Get the updated data from the form fields
+          var updatedName = $('#updatedName_'+id).val();
+          var updatedPrice = $('#updatedPrice_'+id).val();
+          var updatedQuantity = $('#updatedQuantity_'+id).val();
+          var updatedCustName = $('#updatedCustName_'+id).val();
+          var updatedCustPhoneno = $('#updatedCustPhoneno_'+id).val();
+          var updatedCustEmail = $('#updatedCustEmail_'+id).val();
+          var updatedCustAddr = $('#updatedCustAddr_'+id).val();
+          var updatedCustMessage = $('#updatedCustMessage_'+id).val();
+          var updatedCustumerorderstatus = $('#updatedCustumerorderstatus_'+id).val();
+            $.ajax({
+                type: "PUT",
+                url: "/view-cart",
+                data: { 
+                  _id: id,
+                  CakeName: updatedName,
+                  CakePrice: updatedPrice,
+                  CakeQuantity: updatedQuantity,
+                  Customer_Name: updatedCustName,
+                  Customer_Phoneno: updatedCustPhoneno,
+                  Customer_Email: updatedCustEmail,
+                  Customer_Address: updatedCustAddr,
+                  Customer_custommsg: updatedCustMessage,
+                  Customer_order_status: updatedCustumerorderstatus
+
+                },
+                success: function (response) {
+                  alert("Record updated successfully!");
+                  // Refresh the table to show the updated data
+                  location.reload();
+                },
+                error: function (xhr, status, error) {
+                  console.log(error);
+                }
+              });
+        }
+        function deleteData(id) {
+            $.ajax({
+                type: "DELETE",
+                url: "/view-cart",
+                data: { _id: id },
+                success: function (response) {
+                  alert("Record deleted successfully!");
+                  $(`tr[data-id=${id}]`).remove();
+                },
+                error: function (xhr, status, error) {
+                  console.log(error);
+                }
+              });
+        }
+        $(document).ready(function() {
+          // your script here
+        });
+        $(document).on('click', '.view-cart', function() {
+          const id = $(this).data('id');
+          $.ajax({
+            type: 'GET',
+            url: '/view-cart' + id,
+            success: function(data) {
+              // render the next hbs file with the data
+              res.render('view-cart', {
+                data });
+              },
+              error: function(err) {
+              console.log(err);
+              }
+              });
+              });
+      </script>
+    
+    </html>
